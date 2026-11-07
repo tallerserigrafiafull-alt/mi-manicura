@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#d77fa1">
+<meta name="description" content="Administrá tu negocio de manicura desde el celular.">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Mi Manicura</title>
+<style>
+:root{--pink:#d77fa1;--pink2:#f8e8ef;--ink:#3b3035;--muted:#8b7c83;--gold:#bd9855;--bg:#fff9fb;--white:#fff;--line:#f0dfe6;--green:#4b9875}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:84px}
+header{background:linear-gradient(135deg,#d77fa1,#e9a9c1);color:white;padding:22px 18px 24px;border-radius:0 0 25px 25px}
+.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:23px;font-weight:800;letter-spacing:.2px}.sub{font-size:13px;opacity:.9;margin-top:4px}
+.pill{border:1px solid #ffffff80;background:#ffffff24;color:white;border-radius:30px;padding:8px 11px;font-size:12px}
+main{padding:16px;max-width:620px;margin:auto}.welcome{font-size:17px;font-weight:700;margin:4px 0 14px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:white;border:1px solid var(--line);border-radius:17px;padding:14px;box-shadow:0 3px 12px #7c43500a}.stat small{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:23px;margin-top:5px}.stat span{font-size:11px;color:var(--gold)}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px;font-weight:750}.link{border:0;background:none;color:var(--pink);font-weight:700}
+.card{background:white;border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:10px}
+.empty{color:var(--muted);font-size:13px;text-align:center;padding:18px}
+.item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #f6edf1}.item:last-child{border:0}
+.item b{font-size:14px}.item small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.money{font-weight:750;color:var(--green);white-space:nowrap}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 3px calc(8px + env(safe-area-inset-bottom));z-index:5}
+nav button{border:0;background:none;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 7px;min-width:55px}
+nav button span{font-size:20px}nav button.active{color:var(--pink);font-weight:800}
+.primary{border:0;border-radius:13px;background:var(--pink);color:white;font-weight:750;padding:12px 15px;font-size:14px}
+.secondary{border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink);padding:10px 12px;font-weight:650}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;background:white;color:var(--ink);margin-top:6px}
+label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin:12px 0}
+.form-actions{display:flex;gap:8px;margin-top:14px}.form-actions>*{flex:1}
+.page-head{display:flex;justify-content:space-between;align-items:center;margin:5px 0 14px}.page-head h2{font-size:20px;margin:0}
+.hidden{display:none!important}.tag{font-size:11px;background:var(--pink2);color:#a34f73;border-radius:20px;padding:5px 8px}
+.danger{color:#b64b5d;border:0;background:none;font-weight:700}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+.install{display:none;margin-top:12px}
+@media(min-width:650px){main{padding-top:22px}.stats{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="top"><div><div class="brand">💅 Mi Manicura</div><div class="sub">Tu negocio, organizado y en un solo lugar</div></div><div class="pill">✨ Panel personal</div></div></header>
+<main>
+<section id="home">
+<div class="welcome">¡Hola! Este es tu resumen de hoy 💗</div>
+<div class="stats">
+<div class="stat"><small>Turnos de hoy</small><strong id="todayCount">0</strong><span>Agenda diaria</span></div>
+<div class="stat"><small>Clientas</small><strong id="clientCount">0</strong><span>Registradas</span></div>
+<div class="stat"><small>Ingresos del mes</small><strong id="monthIncome">$0</strong><span>Según tus cobros</span></div>
+<div class="stat"><small>Servicios</small><strong id="serviceCount">0</strong><span>En tu catálogo</span></div>
+</div>
+<div class="section-title">Próximos turnos <button class="link" onclick="show('agenda')">Ver agenda →</button></div>
+<div class="card" id="upcoming"></div>
+<div class="section-title">Accesos rápidos</div>
+<div class="card" style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+<button class="secondary" onclick="openForm('appointment')">＋ Agendar turno</button>
+<button class="secondary" onclick="openForm('client')">＋ Nueva clienta</button>
+<button class="secondary" onclick="show('services')">♡ Servicios y precios</button>
+<button class="secondary" onclick="show('cash')">＄ Registrar cobro</button>
+</div>
+<button id="installBtn" class="primary install" style="width:100%">Instalar Mi Manicura</button>
+<p class="note">Tus datos quedan guardados en este celular. Hacé una copia de seguridad desde Ajustes del navegador si cambiás de teléfono.</p>
+</section>
+<section id="agenda" class="hidden"><div class="page-head"><h2>📅 Agenda</h2><button class="primary" onclick="openForm('appointment')">＋ Turno</button></div><div class="card" id="appointments"></div></section>
+<section id="clients" class="hidden"><div class="page-head"><h2>👩 Clientas</h2><button class="primary" onclick="openForm('client')">＋ Agregar</button></div><div id="clientsList" class="card"></div></section>
+<section id="services" class="hidden"><div class="page-head"><h2>💗 Servicios</h2><button class="primary" onclick="openForm('service')">＋ Servicio</button></div><div id="servicesList" class="card"></div></section>
+<section id="cash" class="hidden"><div class="page-head"><h2>💰 Caja</h2><button class="primary" onclick="openForm('payment')">＋ Cobro</button></div><div class="stats"><div class="stat"><small>Ingresos registrados</small><strong id="totalIncome">$0</strong></div><div class="stat"><small>Movimientos</small><strong id="paymentCount">0</strong></div></div><div class="section-title">Últimos cobros</div><div id="paymentsList" class="card"></div></section>
+<section id="settings" class="hidden"><div class="page-head"><h2>⚙️ Ajustes</h2></div><div class="card"><b>Datos de Mi Manicura</b><p class="note">La información se guarda únicamente en el almacenamiento de este navegador y dispositivo.</p><button class="secondary" onclick="exportData()">Descargar copia de seguridad</button><label>Restaurar una copia<input type="file" accept="application/json" onchange="importData(event)"></label><button class="danger" onclick="clearData()">Borrar todos mis datos</button></div><div class="card"><b>Aplicación gratuita</b><p class="note">Esta primera versión funciona sin cuentas ni pagos. Para instalarla como app, debe publicarse una vez en una dirección segura (HTTPS).</p></div></section>
+<section id="formView" class="hidden"><div class="page-head"><h2 id="formTitle">Nuevo</h2><button class="secondary" onclick="cancelForm()">Volver</button></div><div class="card"><form id="dataForm"></form></div></section>
+</main>
+<nav>
+<button class="active" data-page="home" onclick="show('home')"><span>⌂</span>Inicio</button>
+<button data-page="agenda" onclick="show('agenda')"><span>▦</span>Agenda</button>
+<button data-page="clients" onclick="show('clients')"><span>♙</span>Clientas</button>
+<button data-page="services" onclick="show('services')"><span>♡</span>Servicios</button>
+<button data-page="cash" onclick="show('cash')"><span>＄</span>Caja</button>
+<button data-page="settings" onclick="show('settings')"><span>⚙</span>Ajustes</button>
+</nav>
+<script>
+const KEY='miManicuraDataV1';
+let db=JSON.parse(localStorage.getItem(KEY)||'{"clients":[],"services":[],"appointments":[],"payments":[]}');
+let previousPage='home';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(Number(n)||0);
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function show(page){document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));$(page).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page!=='formView')previousPage=page;render()}
+function dateToday(){let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function render(){
+$('clientCount').textContent=db.clients.length;$('serviceCount').textContent=db.services.length;
+const today=db.appointments.filter(a=>a.date===dateToday()&&a.status!=='Cancelado');$('todayCount').textContent=today.length;
+const month=dateToday().slice(0,7);const income=db.payments.filter(p=>p.date.startsWith(month)).reduce((s,p)=>s+Number(p.amount),0);$('monthIncome').textContent=money(income);
+$('totalIncome').textContent=money(db.payments.reduce((s,p)=>s+Number(p.amount),0));$('paymentCount').textContent=db.payments.length;
+const sorted=[...db.appointments].filter(a=>a.status!=='Cancelado').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+const upcoming=sorted.slice(0,4);$('upcoming').innerHTML=upcoming.length?upcoming.map(a=>apptHtml(a)).join(''):'<div class="empty">Todavía no hay turnos. ¡Agendá el primero! 💗</div>';
+$('appointments').innerHTML=sorted.length?sorted.map(a=>apptHtml(a,true)).join(''):'<div class="empty">No hay turnos registrados.</div>';
+$('clientsList').innerHTML=db.clients.length?db.clients.map(c=>`<div class="item"><div><b>${esc(c.name)}</b><small>${esc(c.phone||'Sin teléfono')} ${c.notes?'· '+esc(c.notes):''}</small></div><button class="danger" onclick="del('clients','${c.id}')">Eliminar</button></div>`).join(''):'<div class="empty">Todavía no agregaste clientas.</div>';
+$('servicesList').innerHTML=db.services.length?db.services.map(s=>`<div class="item"><div><b>${esc(s.name)}</b><small>${esc(s.duration||'')} ${s.duration?'minutos':''}</small></div><div class="money">${money(s.price)} <button class="danger" onclick="del('services','${s.id}')">×</button></div></div>`).join(''):'<div class="empty">Agregá tus servicios y precios.</div>';
+$('paymentsList').innerHTML=db.payments.length?[...db.payments].reverse().slice(0,30).map(p=>`<div class="item"><div><b>${esc(p.client||'Cobro')}</b><small>${esc(p.date)} · ${esc(p.method||'')}</small></div><span class="money">${money(p.amount)}</span></div>`).join(''):'<div class="empty">Todavía no hay cobros registrados.</div>';
+}
+function apptHtml(a,full=false){return `<div class="item"><div><b>${esc(a.time)} · ${esc(a.client)}</b><small>${esc(a.date)} · ${esc(a.service)} ${full?'· '+esc(a.status||'Pendiente'):''}</small></div>${full?`<button class="danger" onclick="del('appointments','${a.id}')">Eliminar</button>`:`<span class="tag">Turno</span>`}</div>`}
+function del(type,id){if(confirm('¿Querés eliminar este registro?')){db[type]=db[type].filter(x=>x.id!==id);save()}}
+function field(label,name,type='text',required=true,extra=''){return `<label>${label}<input name="${name}" type="${type}" ${required?'required':''} ${extra}></label>`}
+function selectField(label,name,opts){return `<label>${label}<select name="${name}" required>${opts.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')}</select></label>`}
+function openForm(type){previousPage=document.querySelector('main>section:not(.hidden)').id;let f='',title='';
+if(type==='client'){title='Nueva clienta';f=field('Nombre y apellido','name')+field('Teléfono','phone','tel',false)+`<label>Notas<textarea name="notes" rows="2"></textarea></label>`}
+if(type==='service'){title='Nuevo servicio';f=field('Nombre del servicio','name')+field('Precio ($)','price','number',true,'min="0" step="1"')+field('Duración en minutos','duration','number',false,'min="0"')}
+if(type==='appointment'){title='Agendar turno';f=selectField('Clienta','client',db.clients.map(c=>c.name).length?db.clients.map(c=>c.name):['Primero agregá una clienta'])+selectField('Servicio','service',db.services.map(s=>s.name).length?db.services.map(s=>s.name):['A definir'])+field('Fecha','date','date',true,`value="${dateToday()}"`)+field('Hora','time')+selectField('Estado','status',['Pendiente','Confirmado','Realizado'])}
+if(type==='payment'){title='Registrar cobro';f=field('Nombre de la clienta','client')+field('Importe ($)','amount','number',true,'min="0" step="1"')+field('Fecha','date','date',true,`value="${dateToday()}"`)+selectField('Medio de pago',['method'],['Efectivo','Transferencia','Débito','Crédito','Otro']).replace('name="method"','name="method"')}
+$('formTitle').textContent=title;$('dataForm').innerHTML=f+`<div class="form-actions"><button type="button" class="secondary" onclick="cancelForm()">Cancelar</button><button class="primary" type="submit">Guardar</button></div>`;$('dataForm').dataset.type=type;show('formView')}
+function cancelForm(){show(previousPage)}
+$('dataForm').addEventListener('submit',e=>{e.preventDefault();let o=Object.fromEntries(new FormData(e.target).entries());o.id=crypto.randomUUID();const t=e.target.dataset.type;
+if(t==='client')db.clients.push(o);if(t==='service')db.services.push(o);if(t==='appointment')db.appointments.push(o);if(t==='payment')db.payments.push(o);
+save();show(previousPage)});
+function exportData(){let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mi-manicura-copia.json';a.click();URL.revokeObjectURL(a.href)}
+function importData(e){let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d.clients||!d.services||!d.appointments||!d.payments)throw 0;db=d;save();alert('Copia restaurada.')}catch{alert('El archivo no parece ser una copia válida.')}};r.readAsText(file)}
+function clearData(){if(confirm('Esto borrará clientas, turnos, servicios y cobros de este celular. ¿Continuar?')){db={clients:[],services:[],appointments:[],payments:[]};save()}}
+render();
+let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').style.display='block'});$('installBtn').addEventListener('click',async()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null}else alert('Abrí el menú de Chrome y elegí “Instalar aplicación” o “Agregar a pantalla principal”.')});
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js');
+</script>
+</body></html>
